@@ -3,7 +3,6 @@ import { View, Text, Image, StatusBar, Linking } from 'react-native';
 import { Button as NBButton, Text as NBText, Icon as NBIcon, Thumbnail as NBThumbnail, } from 'native-base';
 import SafeAreaView from 'react-native-safe-area-view';
 import styles from './Landingstyles'
-import InAppBrowser from 'react-native-inappbrowser-reborn'
 
 class Landing extends Component {
 
@@ -23,53 +22,12 @@ class Landing extends Component {
     }
 
     open_news_page() {
-        this.props.navigation.navigate('News')
+        // this.props.navigation.navigate('News')
+        Linking.openURL('https://tugerradio.com')
     }
 
     open_radio_page() {
         this.props.navigation.navigate('Radio')
-    }
-
-    async openLink() {
-        try {
-            const url = 'https://tugerradio.com/'
-            if (await InAppBrowser.isAvailable()) {
-                const result = await InAppBrowser.open(url, {
-                    // iOS Properties
-                    dismissButtonStyle: 'cancel',
-                    preferredBarTintColor: '#453AA4',
-                    preferredControlTintColor: 'white',
-                    readerMode: false,
-                    animated: true,
-                    modalPresentationStyle: 'overFullScreen',
-                    modalTransitionStyle: 'partialCurl',
-                    modalEnabled: true,
-                    enableBarCollapsing: false,
-                    // Android Properties
-                    showTitle: true,
-                    toolbarColor: '#6200EE',
-                    secondaryToolbarColor: 'black',
-                    enableUrlBarHiding: true,
-                    enableDefaultShare: true,
-                    forceCloseOnRedirection: false,
-                    // Specify full animation resource identifier(package:anim/name)
-                    // or only resource name(in case of animation bundled with app).
-                    animations: {
-                        startEnter: 'slide_in_right',
-                        startExit: 'slide_out_left',
-                        endEnter: 'slide_in_left',
-                        endExit: 'slide_out_right'
-                    },
-                    headers: {
-                        'my-custom-header': 'my custom header value'
-                    }
-                })
-                // alert(JSON.stringify(result))   /**user decides not to open the browser */
-            }
-            else Linking.openURL(url)
-        } catch (error) {
-            alert(error.message)
-        }
     }
 
     render() {
@@ -91,7 +49,7 @@ class Landing extends Component {
 
                         <View style={styles.upper_body}>
 
-                            <NBButton full iconLeft transparent warning bordered style={styles.button} onPress={() => { this.openLink() }}>
+                            <NBButton full iconLeft transparent warning bordered style={styles.button} onPress={() => { this.open_news_page() }}>
                                 <NBIcon style={styles.button_icon} name='newspaper-sharp' />
                                 <Text style={styles.button_text}>News</Text>
                             </NBButton>

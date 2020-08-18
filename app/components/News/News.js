@@ -72,11 +72,11 @@ class News extends Component {
                 var jsonconvertedrows = JSON.parse(responseJson)
                 this.setState({ news_table: jsonconvertedrows })
 
-                console.log('news table :', this.state.news_table)
+                // console.log('news table :', this.state.news_table)
 
-                console.log('one news excerpt: ', this.state.news_table[0].excerpt.rendered)
+                // console.log('one news excerpt: ', this.state.news_table[0].excerpt.rendered)
 
-                console.log('documentation html sample: ', htmlContent)
+                // console.log('documentation html sample: ', htmlContent)
             })
 
     }

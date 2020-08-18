@@ -19,7 +19,6 @@ class Splash extends Component {
         super(props);
 
         this.state = {
-            bottom_text_color: 'transparent' /**we hide the buttom text by default and show it by changing its color when the his animation is called */
         }
     }
 
@@ -34,15 +33,17 @@ class Splash extends Component {
         this.textRef.zoomIn(1000).then(() => {
         });
 
-        /**splash header second animation */
-        setTimeout(() => {
-            this.textRef.pulse(2000)
-        }, 5000);
+        // splash header second animation 
+        // setTimeout(() => {
+        //     // first value is the speed with which it animates
+        //     // second value is the delay time
+        //     this.textRef.pulse(2000)
+        // }, 5000);
 
         /**splash header 3rd animation */
         setTimeout(() => {
             this.textRef.zoomOut(1500)
-        }, 7500);
+        }, 5000);
 
 
         /****************image animation *************/
@@ -51,38 +52,34 @@ class Splash extends Component {
         });
 
         /**splash image second animation */
-        setTimeout(() => {
-            this.imageRef.pulse(2000)
-        }, 5000);
+        // setTimeout(() => {
+        //     this.imageRef.pulse(2000)
+        // }, 5000);
 
         /**splash image 3rd animation */
         setTimeout(() => {
             this.imageRef.zoomOut(1500)
-        }, 7500);
+        }, 5000);
 
 
         /***************bottom text animation********** */
         /**bottom text first animation */
-        setTimeout(() => {
-            /**we now display our text before showing the animation */
-            this.setState({ bottom_text_color: '#ceb786' })
-
-            this.bottomtext.slideInLeft(1000)   //first value is the speed with which it animates
-        }, 3000);   //second value is the delay time
+        this.bottomtext.zoomIn(1000).then(() => {
+        });
 
         /**bottom text second animation */
         setTimeout(() => {
-            this.bottomtext.jello(2000)
-        }, 5000);
+            this.bottomtext.jello(3000)
+        }, 3000);
 
         /**bottom text 3rd animation */
         setTimeout(() => {
             this.bottomtext.fadeOutRight(1500)
-        }, 7500);
+        }, 5000);
 
 
         /**finally navigate to our landing page after all animations have completed */
-        setTimeout(() => { this.props.navigation.navigate('Landing') }, 8000);
+        setTimeout(() => { this.props.navigation.navigate('Landing') }, 5500);
     }
 
 
@@ -123,7 +120,7 @@ class Splash extends Component {
                     <View style={styles.bottomtext_view}>
                         < Animatable.Text
                             ref={textelement => this.bottomtext = textelement}
-                            style={{ fontStyle: 'italic', fontSize: 20, color: this.state.bottom_text_color }}>
+                            style={{ fontStyle: 'italic', fontSize: 20, color: '#ceb786' }}>
                             Infotainment at its best
                     </Animatable.Text>
 

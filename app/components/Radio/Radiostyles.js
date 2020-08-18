@@ -6,7 +6,7 @@ export default StyleSheet.create({
     },
 
     pagesetup: {
-        flex: 1
+        flex: 1,
     },
 
     background_picture: {

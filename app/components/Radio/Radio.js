@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import {
     View, Text, Image,
     StatusBar, Dimensions,
-    InteractionManager
+    InteractionManager, Linking
 } from 'react-native';
-import { Spinner as NBSpinner, Button as NBButton, Text as NBText, Icon as NBIcon, Thumbnail as NBThumbnail } from 'native-base';
+import { Spinner as NBSpinner, Button as NBButton, Text as NBText, Icon as NBIcon,
+     Thumbnail as NBThumbnail } from 'native-base';
 import styles from './Radiostyles'
 import Slider from '@react-native-community/slider';
 import SafeAreaView from 'react-native-safe-area-view';
@@ -100,7 +101,7 @@ class Radio extends Component {
 
         InteractionManager.runAfterInteractions(() => {
             // ...long-running synchronous task...
-            SoundPlayer.loadUrl('https://s4.radio.co/sb0472ff73/listen')
+            SoundPlayer.loadUrl('https://uk7.internet-radio.com/proxy/radiomerge?mp=/stream')
         }).then(() => {
             onFinishedLoadingURLSubscription = SoundPlayer.addEventListener('FinishedLoadingURL', ({ success, url }) => {
                 // console.log('finished loading url', success, url)
