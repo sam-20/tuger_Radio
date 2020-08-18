@@ -101,7 +101,7 @@ class Radio extends Component {
 
         InteractionManager.runAfterInteractions(() => {
             // ...long-running synchronous task...
-            SoundPlayer.loadUrl('https://uk7.internet-radio.com/proxy/radiomerge?mp=/stream')
+            SoundPlayer.loadUrl('https://s4.radio.co/sb0472ff73/listen')
         }).then(() => {
             onFinishedLoadingURLSubscription = SoundPlayer.addEventListener('FinishedLoadingURL', ({ success, url }) => {
                 // console.log('finished loading url', success, url)
