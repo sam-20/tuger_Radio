@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
 import {
     View, Text, Image,
-    StatusBar, Dimensions,
-    InteractionManager, Linking
+    StatusBar, Dimensions
 } from 'react-native';
-import { Spinner as NBSpinner, Button as NBButton, Text as NBText, Icon as NBIcon,
-     Thumbnail as NBThumbnail } from 'native-base';
+import {
+    Spinner as NBSpinner, Button as NBButton, Text as NBText, Icon as NBIcon,
+    Thumbnail as NBThumbnail
+} from 'native-base';
 import styles from './Radiostyles'
 import Slider from '@react-native-community/slider';
 import SafeAreaView from 'react-native-safe-area-view';
-import SoundPlayer from 'react-native-sound-player'
 import Modulevariables from '../Modulevariables'
 import * as Animatable from 'react-native-animatable';
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import TrackPlayer from 'react-native-track-player';
 
 var screen = Dimensions.get('window')
 
-var onFinishedLoadingURLSubscription = null
-
 class Radio extends Component {
+
+    intervalID; //autorefresh 1
 
     static navigationOptions = {
         title: 'Back',
@@ -47,12 +47,20 @@ class Radio extends Component {
             /**initial vlaue of our volume slide */
             volumesliderValue: 50,
 
-            buffering_spinner: false
+            buffering_spinner: false,
         }
     }
 
     componentDidMount() {
 
+        /**return default icons */
+        this.setState({ radio_icon_state: 'play-sharp' })
+        Modulevariables.radio_icon_state = 'play-sharp'
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalID); //autorefresh 3
+        // TrackPlayer.destroy()
     }
 
     start_or_stop_radio() {
@@ -61,15 +69,8 @@ class Radio extends Component {
             /**play */
             this.setState({ radio_icon_state: 'play-sharp' })
             Modulevariables.radio_icon_state = 'play-sharp'
-            this.setState({ radio_state: 'loading feed ...' })
-            // this.setState({ buffering_state: true })
             this.setState({ buffering_spinner: true })
-
-            setTimeout(() => {
-                this.start_radio()
-            }, 2000);
-
-
+            this.start_radio()
 
             /**change our icon */
             this.setState({ radio_icon_state: 'stop-sharp' })
@@ -99,24 +100,79 @@ class Radio extends Component {
         // https://uk7.internet-radio.com/proxy/radiomerge?mp=/stream
         // https://uk6.internet-radio.com/proxy/realdanceradio?mp=/live
 
-        InteractionManager.runAfterInteractions(() => {
-            // ...long-running synchronous task...
-            SoundPlayer.loadUrl('https://s4.radio.co/sb0472ff73/listen')
-        }).then(() => {
-            onFinishedLoadingURLSubscription = SoundPlayer.addEventListener('FinishedLoadingURL', ({ success, url }) => {
-                // console.log('finished loading url', success, url)
-                this.setState({ radio_state: 'feed loaded!' })
-                // this.setState({ buffering_state: false })
-                this.setState({ buffering_spinner: false })
-                SoundPlayer.play()
-            }, err => {
-                console.warn(err)
-            })
-        })
+        // Set up the player
+        await TrackPlayer.setupPlayer();
+
+        // Add a track to the queue
+        await TrackPlayer.add({
+            id: 'trackId',
+            url: 'https://s4.radio.co/sb0472ff73/listen',
+            title: 'Track Title',
+            artist: 'Track Artist',
+            // artwork: require('track.png')
+        });
+
+        /**after adding the link to trackplayer we wait for 2 seconds before checking the state of the player if the media is ready to play */
+        setTimeout(() => {
+            this.check_player_state()
+        }, 5000);
+
     };
 
+    /**check if the media in trackplayer is ready to play before we hide buffering spinner
+     * or continue to display spinner if the media is not ready to play
+     */
+    check_player_state = async () => {
+
+        const isReady = await this.get_state_of_media()   /**this is also going to another function to see if the media is actually ready */
+
+        /**after fetching the results we can now tell if the media is ready or not */
+        if (isReady) {
+            // console.warn('media is ready to start playing')
+            this.setState({ buffering_spinner: false })
+            TrackPlayer.play()
+
+            this.intervalID = setInterval(this.check_buffer_state.bind(this), 3000);    //autorefresh 2
+
+        } else {
+            // console.warn('media is not ready to start playing')
+        }
+    }
+
+    get_state_of_media = async () => {
+        const currentState = await TrackPlayer.getState()
+        return currentState === TrackPlayer.STATE_READY      //State indicating that the player is ready to start playing
+
+        // return currentState === TrackPlayer.STATE_NONE       //State indicating that no media is currently loaded
+        // return currentState === TrackPlayer.STATE_READY      //State indicating that the player is ready to start playing
+        // return currentState === TrackPlayer.STATE_PLAYING    //State indicating that the player is currently playing
+        // return currentState === TrackPlayer.STATE_PAUSED     //State indicating that the player is currently paused
+        // return currentState === TrackPlayer.STATE_STOPPED    //State indicating that the player is currently stopped
+        // return currentState === TrackPlayer.STATE_BUFFERING  //State indicating that the player is currently buffering (in “play” state)
+        // return currentState === TrackPlayer.STATE_CONNECTING //State indicating that the player is currently buffering (in “pause” state)
+    }
+
+    check_buffer_state = async () => {
+        // console.warn('checking buffer state ...')
+
+        const isBuffering = await this.get_media_buffering_state()
+
+        if (isBuffering) {
+            // console.warn('buffering ...')
+            this.setState({ buffering_spinner: true })
+        } else {
+            // console.warn('not buffering ...')
+            this.setState({ buffering_spinner: false })
+        }
+    }
+
+    get_media_buffering_state = async () => {
+        const currentState = await TrackPlayer.getState()
+        return currentState === TrackPlayer.STATE_BUFFERING
+    }
+
     stop_radio() {
-        SoundPlayer.pause()
+        TrackPlayer.stop()
     }
 
     /**set volume of radio */
@@ -125,14 +181,15 @@ class Radio extends Component {
         /**update value of volume slider */
         this.setState({ volumesliderValue: volume }, () => {
 
-            /**react-native-soundplayer uses volume from 0 to 1
+            /**react-native-trackplayer uses volume from 0 to 1
              * but our slider uses 0 to 100 step
              * hence each value in the slider should be divided by 100 so that the max volume in the slider which is 100 (divided by 100) will give us 1
              */
             volume = volume / 100
-            SoundPlayer.setVolume(volume)   /**changing volume in soundplayer */
+            TrackPlayer.setVolume(volume)   /**changing volume in trackplayer */
         })
     }
+
 
 
     render() {
@@ -170,7 +227,6 @@ class Radio extends Component {
                         <View style={styles.logo_freguency_view}>
                             <Image source={require("../../assets/logo.jpg")} style={styles.logo} />
                             <Text style={styles.freq_text}> Infotainment at its best</Text>
-                            {/* <Text style={{ color: 'white' }}>{this.state.radio_state}</Text> */}
                         </View>
 
 
