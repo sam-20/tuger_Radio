@@ -107,9 +107,9 @@ class Radio extends Component {
         await TrackPlayer.add({
             id: 'trackId',
             url: 'https://s4.radio.co/sb0472ff73/listen',
-            title: 'Track Title',
-            artist: 'Track Artist',
-            // artwork: require('track.png')
+            title: 'Tuger Radio',
+            artist: 'Infotainment at its best',
+            artwork: require('../../assets/logo.jpg')
         });
 
         /**after adding the link to trackplayer we wait for 2 seconds before checking the state of the player if the media is ready to play */
