@@ -60,7 +60,7 @@ class Radio extends Component {
 
     componentWillUnmount() {
         clearInterval(this.intervalID); //autorefresh 3
-        // TrackPlayer.destroy()
+        TrackPlayer.destroy()
     }
 
     start_or_stop_radio() {
