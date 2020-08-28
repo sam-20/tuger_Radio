@@ -53,6 +53,20 @@ class Radio extends Component {
 
     componentDidMount() {
 
+        // Set up the player
+        TrackPlayer.setupPlayer();
+
+        setTimeout(() => {
+            // Add a track to the queue
+            TrackPlayer.add({
+                id: 'trackId',
+                url: 'https://s4.radio.co/sb0472ff73/listen',
+                title: 'Tuger Radio',
+                artist: 'Infotainment at its best',
+                artwork: require('../../assets/logo.jpg')
+            });
+        }, 2000);
+
         /**return default icons */
         this.setState({ radio_icon_state: 'play-sharp' })
         Modulevariables.radio_icon_state = 'play-sharp'
