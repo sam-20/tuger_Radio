@@ -49,23 +49,21 @@ class Radio extends Component {
 
             buffering_spinner: false,
         }
+
+        // Set up the player
+        TrackPlayer.setupPlayer();
     }
 
     componentDidMount() {
 
-        // Set up the player
-        TrackPlayer.setupPlayer();
-
-        setTimeout(() => {
-            // Add a track to the queue
-            TrackPlayer.add({
-                id: 'trackId',
-                url: 'https://s4.radio.co/sb0472ff73/listen',
-                title: 'Tuger Radio',
-                artist: 'Infotainment at its best',
-                artwork: require('../../assets/logo.jpg')
-            });
-        }, 2000);
+        //add track to the player
+        TrackPlayer.add({
+            id: 'trackId',
+            url: 'https://s4.radio.co/sb0472ff73/listen',
+            title: 'Tuger Radio',
+            artist: 'Infotainment at its best',
+            artwork: require('../../assets/logo.jpg')
+        });
 
         /**return default icons */
         this.setState({ radio_icon_state: 'play-sharp' })
@@ -115,21 +113,21 @@ class Radio extends Component {
         // https://uk6.internet-radio.com/proxy/realdanceradio?mp=/live
 
         // Set up the player
-        await TrackPlayer.setupPlayer();
+        // await TrackPlayer.setupPlayer();
 
         // Add a track to the queue
-        await TrackPlayer.add({
-            id: 'trackId',
-            url: 'https://s4.radio.co/sb0472ff73/listen',
-            title: 'Tuger Radio',
-            artist: 'Infotainment at its best',
-            artwork: require('../../assets/logo.jpg')
-        });
+        // await TrackPlayer.add({
+        //     id: 'trackId',
+        //     url: 'https://s4.radio.co/sb0472ff73/listen',
+        //     title: 'Tuger Radio',
+        //     artist: 'Infotainment at its best',
+        //     artwork: require('../../assets/logo.jpg')
+        // });
 
         /**after adding the link to trackplayer we wait for 2 seconds before checking the state of the player if the media is ready to play */
         setTimeout(() => {
             this.check_player_state()
-        }, 5000);
+        }, 2000);
 
     };
 

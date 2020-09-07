@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, Button, Text, Image, StatusBar, Alert, TouchableWithoutFeedback } from 'react-native'
 import styles from './Splashstyles'
 import SafeAreaView from 'react-native-safe-area-view';
-
+import TrackPlayer from 'react-native-track-player';
 
 /**import animation...........1 */
 import * as Animatable from 'react-native-animatable';
@@ -20,10 +20,22 @@ class Splash extends Component {
 
         this.state = {
         }
+
+        // Set up the player
+        TrackPlayer.setupPlayer();
     }
 
 
     componentDidMount() {
+
+        //add track to the player
+        TrackPlayer.add({
+            id: 'trackId',
+            url: 'https://s4.radio.co/sb0472ff73/listen',
+            title: 'Tuger Radio',
+            artist: 'Infotainment at its best',
+            artwork: require('../../assets/logo.jpg')
+        });
 
 
         /**define animation reference....3 */
